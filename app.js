@@ -53,3 +53,10 @@ app.get('/products', function(req, res) {
         res.json({"result": result});
     });
 });
+app.get('/product/:id', function(req, res) {
+    var $id = req.params.id;
+    con.query("SELECT * FROM `products` WHERE `id` = '"+$id+"' LIMIT 1", function (err, result) {
+        if (err) throw err;
+        res.json({"result": result[0]});
+    });
+});
