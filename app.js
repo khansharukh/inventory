@@ -70,3 +70,23 @@ app.post('/product/add', function(req, res) {
         res.send({"status": 200, "error": null, "response": insert_data});
     })
 });
+// update product
+app.post('/product/update/:id', function (req, res) {
+    var name =  req.body.name;
+    var in_stock =  req.body.in_stock;
+    var description =  req.body.description;
+    var $id = req.params.id;
+    var query = con.query("UPDATE `products` SET `name` = '"+name+"', `in_stock` = '"+in_stock+"', `description` = '"+description+"' WHERE id = '"+$id+"' LIMIT 1", (err, result) => {
+        // Neat!
+        res.send({"status": 200, "error": null, "response": $id});
+    })
+});
+// delete product
+app.delete('/product/delete/:id', function(req, res) {
+    var $id =  req.params.id;
+    var sql = "DELETE FROM `products` WHERE id = '"+$id+"' LIMIT 1";
+    con.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send({"status": 200, "error": null, "response": "Number of records deleted is 1: " + $id});
+    });
+});
