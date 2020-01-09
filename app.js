@@ -18,7 +18,7 @@ con.connect(function(err) {
     if (err) throw err;
     // console.log("Connected!");
 
-    var tbl_products = "CREATE TABLE IF NOT EXISTS `inventory`.`products` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `in_stock` ENUM('yes','no') NOT NULL DEFAULT 'yes' , `created_at` DATETIME NOT NULL , PRIMARY KEY (`id`))";
+    var tbl_products = "CREATE TABLE IF NOT EXISTS `inventory`.`products` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `uid` INT(11) NOT NULL , `in_stock` ENUM('yes','no') NOT NULL DEFAULT 'yes' , `created_at` DATETIME NOT NULL , PRIMARY KEY (`id`))";
     con.query(tbl_products, function (err, result) {
         if (err) throw err;
         //console.log("Inventory table created");
