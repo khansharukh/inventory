@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+var moment = require('moment');
 
 // create express app
 const app = express();
@@ -50,13 +51,22 @@ app.listen(3000, () => {
 app.get('/products', function(req, res) {
     con.query("SELECT * FROM `products` WHERE `in_stock` = 'yes' ORDER BY `created_at` ASC", function (err, result) {
         if (err) throw err;
-        res.json({"result": result});
+        res.send({"status": 200, "error": null, "response": result});
     });
 });
+// get single product
 app.get('/product/:id', function(req, res) {
     var $id = req.params.id;
     con.query("SELECT * FROM `products` WHERE `id` = '"+$id+"' LIMIT 1", function (err, result) {
         if (err) throw err;
-        res.json({"result": result[0]});
+        res.send({"status": 200, "error": null, "response": result});
     });
+});
+// add new product
+app.post('/product/add', function(req, res) {
+    var insert_data  = {name: req.body.name, description: req.body.description, in_stock: req.body.in_stock, created_at: moment().format("YYYY-MM-DD HH:mm:ss")};
+    var query = con.query('INSERT INTO `products` SET ?', insert_data, (err, result) => {
+        // Neat!
+        res.send({"status": 200, "error": null, "response": insert_data});
+    })
 });
