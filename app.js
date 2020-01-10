@@ -37,6 +37,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
+//CORS Middleware
+app.use(function (req, res, next) {
+    //Enabling CORS
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,DELETE,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+    next();
+});
+
 // define a simple route
 app.get('/', (req, res) => {
     res.json({"message": "Hurray!"});
@@ -89,4 +98,14 @@ app.delete('/product/delete/:id', function(req, res) {
         if (err) throw err;
         res.send({"status": 200, "error": null, "response": "Number of records deleted is 1: " + $id});
     });
+});
+
+// auth user
+app.post('/user/login', function (req, res) {
+    var email =  req.body.ip_email;
+    var pass =  req.body.ip_pass;
+    var query = con.query("SELECT * FROM `users` WHERE `email` = '"+email+"' AND `password` = '"+pass+"' LIMIT 1", (err, result) => {
+        // Neat!
+        res.send({"status": 200, "error": null, "response": result});
+    })
 });
