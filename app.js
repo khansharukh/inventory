@@ -19,7 +19,7 @@ con.connect(function(err) {
     if (err) throw err;
     // console.log("Connected!");
 
-    var tbl_products = "CREATE TABLE IF NOT EXISTS `inventory`.`products` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `in_stock` ENUM('yes','no') NOT NULL DEFAULT 'yes' , `created_at` DATETIME NOT NULL , PRIMARY KEY (`id`))";
+    var tbl_products = "CREATE TABLE IF NOT EXISTS `inventory`.`products` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `uid` INT(11) NOT NULL , `name` VARCHAR(255) NOT NULL , `description` TEXT NOT NULL , `in_stock` ENUM('yes','no') NOT NULL DEFAULT 'yes' , `created_at` DATETIME NOT NULL , PRIMARY KEY (`id`))";
     con.query(tbl_products, function (err, result) {
         if (err) throw err;
         //console.log("Inventory table created");
@@ -57,8 +57,9 @@ app.listen(3000, () => {
 });
 
 // get all products
-app.get('/products', function(req, res) {
-    con.query("SELECT * FROM `products` WHERE `in_stock` = 'yes' ORDER BY `created_at` ASC", function (err, result) {
+app.get('/products/:uid', function(req, res) {
+    var $id = req.params.uid;
+    con.query("SELECT * FROM `products` WHERE `uid` = '"+$id+"' ORDER BY `created_at` ASC", function (err, result) {
         if (err) throw err;
         res.send({"status": 200, "error": null, "response": result});
     });
@@ -73,7 +74,7 @@ app.get('/product/:id', function(req, res) {
 });
 // add new product
 app.post('/product/add', function(req, res) {
-    var insert_data  = {name: req.body.name, description: req.body.description, in_stock: req.body.in_stock, created_at: moment().format("YYYY-MM-DD HH:mm:ss")};
+    var insert_data  = {uid: req.body.user_id, name: req.body.name, description: req.body.description, in_stock: req.body.in_stock, created_at: moment().format("YYYY-MM-DD HH:mm:ss")};
     var query = con.query('INSERT INTO `products` SET ?', insert_data, (err, result) => {
         // Neat!
         res.send({"status": 200, "error": null, "response": insert_data});
